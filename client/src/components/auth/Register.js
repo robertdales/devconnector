@@ -1,8 +1,11 @@
 import React, { Fragment, useState } from 'react';
+import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
+import { setAlert } from '../../actions/alert';
+import PropTypes from 'prop-types';
 
-function Register() {
+function Register({ setAlert }) {
   // Create hook for formData, and set default values
   const [formData, setFormData] = useState({
     name: '',
@@ -26,7 +29,9 @@ function Register() {
     //Stop page refreshing on form submission
     e.preventDefault();
     if (password !== password2) {
-      console.log('Passwords do not match');
+      // Pass alert message and alert type to setAlert
+      // setAlert is connected to our alert action
+      setAlert('Passwords do not match', 'danger');
     } else {
       // All of this code will be replace with a redux
       const newUser = {
@@ -109,10 +114,14 @@ function Register() {
         <input type='submit' className='btn btn-primary' value='Register' />
       </form>
       <p className='my-1'>
-        Already have an account? <Link to='login'>Sign In</Link>
+        Already have an account? <Link to='/login'>Sign In</Link>
       </p>
     </Fragment>
   );
 }
 
-export default Register;
+Register.propTypes = {
+  setAlert: PropTypes.func.isRequired
+};
+
+export default connect(null, { setAlert })(Register);

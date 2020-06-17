@@ -1,3 +1,6 @@
+// Set up Schema for user profile
+// Uses the User Schema as one of the fields
+
 const mongoose = require('mongoose');
 
 const ProfileSchema = new mongoose.Schema({
