@@ -14,9 +14,7 @@ module.exports = function (req, res, next) {
   try {
     // Verify token. jwtSecret comes from 'default.json' config file
     const decoded = jwt.verify(token, config.get('jwtSecret'));
-    console.log(req.user);
     req.user = decoded.user;
-    console.log(req.user);
 
     // Call the function passed in as callback
     next();
