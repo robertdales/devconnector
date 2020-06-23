@@ -1,10 +1,16 @@
-import React, { Fragment, useState } from 'react';
+import React, { Fragment, useState, useEffect } from 'react';
 import { Link, withRouter } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { createProfile } from '../../actions/profile';
+import { createProfile, getCurrentProfile } from '../../actions/profile';
 
-const CreateProfile = ({ createProfile, history }) => {
+// We use the same action for create profile and edit profile
+const EditProfile = ({
+  profile: { profile, loading },
+  createProfile,
+  getCUrrentProfile,
+  history
+}) => {
   // Hook for formData state
   const [formData, setFormData] = useState({
     company: '',
@@ -23,6 +29,28 @@ const CreateProfile = ({ createProfile, history }) => {
 
   //Hook for toggling social media section (can be hidden or unhidden)
   const [displaySocialInputs, toggleSocialInputs] = useState(false);
+
+  // useEffect runs while page is loading [loading].
+  // Use it to load current profile
+  useEffect(() => {
+    getCurrentProfile();
+    setFormData({
+      // if loading, or if no property exists, then have blank field, else put property in field
+      company: loading || !profile.company ? '' : profile.company,
+      website: loading || !profile.website ? '' : profile.website,
+      location: loading || !profile.location ? '' : profile.location,
+      status: loading || !profile.status ? '' : profile.status,
+      skills: loading || !profile.skills ? '' : profile.skills.join(','),
+      githubusername:
+        loading || !profile.githubusername ? '' : profile.githubusername,
+      bio: loading || !profile.bio ? '' : profile.bio,
+      twitter: loading || !profile.social ? '' : profile.social.twitter,
+      linkedin: loading || !profile.social ? '' : profile.social.linkedin,
+      facebook: loading || !profile.social ? '' : profile.social.facebook,
+      youtube: loading || !profile.social ? '' : profile.social.youtube,
+      instagram: loading || !profile.social ? '' : profile.social.instagram
+    });
+  }, [loading]);
 
   // Destructure fields
   const {
@@ -48,7 +76,8 @@ const CreateProfile = ({ createProfile, history }) => {
   // Handle onSubmit
   const onSubmit = (e) => {
     e.preventDefault();
-    createProfile(formData, history);
+    // pass in true as a parameter to signify we want to edit rather than create a profile
+    createProfile(formData, history, true);
   };
 
   return (
@@ -221,8 +250,16 @@ const CreateProfile = ({ createProfile, history }) => {
   );
 };
 
-CreateProfile.propTypes = {
-  createProfile: PropTypes.func.isRequired
+EditProfile.propTypes = {
+  createProfile: PropTypes.func.isRequired,
+  getCurrentProfile: PropTypes.func.isRequired,
+  profile: PropTypes.object.isRequired
 };
 
-export default connect(null, { createProfile })(withRouter(CreateProfile));
+const mapStateToProps = (state) => ({
+  profile: state.profile
+});
+
+export default connect(mapStateToProps, { createProfile, getCurrentProfile })(
+  withRouter(EditProfile)
+);

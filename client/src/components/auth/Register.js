@@ -56,6 +56,7 @@ function Register({ setAlert, register, isAuthenticated }) {
             placeholder='Name'
             name='name'
             value={name}
+            required
             onChange={(e) => onChange(e)}
           />
         </div>
@@ -78,6 +79,7 @@ function Register({ setAlert, register, isAuthenticated }) {
             placeholder='Password'
             name='password'
             value={password}
+            minLength='6'
             onChange={(e) => onChange(e)}
           />
         </div>
@@ -87,6 +89,7 @@ function Register({ setAlert, register, isAuthenticated }) {
             placeholder='Confirm Password'
             name='password2'
             value={password2}
+            minLength='6'
             onChange={(e) => onChange(e)}
           />
         </div>

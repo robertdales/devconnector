@@ -8,6 +8,7 @@ const { check, validationResult } = require('express-validator');
 // Import required DB Schemas
 const Profile = require('../../models/Profile');
 const User = require('../../models/User');
+const Post = require('../../models/Post');
 
 //@route  GET api/profile/me
 //@desc   Get current user's profile
@@ -159,7 +160,9 @@ router.get('/user/:user_id', async (req, res) => {
 
 router.delete('/', auth, async (req, res) => {
   try {
-    //@ TO DO - REMOVE USERS POSTS
+    // REMOVE USERS POSTS
+    // Find and remove all posts by user id
+    await Post.deleteMany({ user: req.user.id });
 
     // Find profile by user id and remove it
     await Profile.findOneAndRemove({ user: req.user.id });
@@ -304,7 +307,6 @@ router.put(
       current,
       description
     };
-    console.log(newEdu);
     try {
       // Get the profile we're adding the education to
       const profile = await Profile.findOne({ user: req.user.id });
